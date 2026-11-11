@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>심평원 모의면접 평가표</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: single column scoring sheet — header form, tab strip, item cards, sticky score bar at bottom */
+:root{
+  --bg:#f5f7f8; --panel:#ffffff; --ink:#1b2a33; --muted:#5d6f7a; --line:#d8e0e5;
+  --accent:#1f5f8b; --accent-ink:#ffffff; --sel:#e3eef6; --warn:#b3261e;
+  --sp1:#e07b39; --sp2:#2f5597; --sp3:#3a8f4f; --sp4:#c99700; --sp5:#d6454a;
+  --font:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181d; --panel:#18222a; --ink:#e3eaee; --muted:#93a4ae; --line:#2c3a44;
+  --accent:#6fb0dc; --accent-ink:#0d1418; --sel:#1f3444; --warn:#ff8a80;
+  --sp1:#f0a066; --sp2:#86a8e8; --sp3:#79c48c; --sp4:#e8c552; --sp5:#f08589; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11181d; --panel:#18222a; --ink:#e3eaee; --muted:#93a4ae; --line:#2c3a44;
+  --accent:#6fb0dc; --accent-ink:#0d1418; --sel:#1f3444; --warn:#ff8a80;
+  --sp1:#f0a066; --sp2:#86a8e8; --sp3:#79c48c; --sp4:#e8c552; --sp5:#f08589; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding-block:20px 120px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+h1{font-size:1.4rem;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:.85rem;margin:2px 0 0}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.meta label{display:grid;gap:4px;font-size:.8rem;color:var(--muted)}
+input,textarea{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+textarea{min-height:44px;resize:vertical;font-size:.9rem}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.tab{font:inherit;background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;color:var(--muted);cursor:pointer;font-weight:500}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab small{font-family:var(--mono);font-size:.75rem;margin-left:4px}
+.note{font-size:.85rem;color:var(--muted);margin:0}
+.banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--sel);border-radius:6px;padding:10px 12px;font-size:.88rem}
+.list{display:grid;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:10px}
+.top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.item{font-weight:700}
+.chip{font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:999px;border:1.5px solid currentColor}
+.lv{font-size:.78rem;color:var(--muted)}
+.look{margin:0;font-size:.9rem;color:var(--muted)}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.sbtn{font:inherit;font-family:var(--mono);font-size:1rem;padding:8px 0;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;cursor:pointer}
+.sbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.desc{display:grid;gap:4px;font-size:.85rem;margin:0}
+.desc div{display:grid;grid-template-columns:34px 1fr;gap:6px;padding:4px 6px;border-radius:4px}
+.desc div.on{background:var(--sel)}
+.desc b{font-family:var(--mono);font-weight:500;color:var(--muted)}
+details{font-size:.85rem;color:var(--muted)}
+summary{cursor:pointer}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);
+  padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar-in{max-width:860px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.score{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.95rem}
+.score strong{font-size:1.25rem}
+.flag{font-size:.8rem;font-weight:700}
+.flag.low{color:var(--warn)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.88rem;padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--warn)}
+.sp-sum{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem;font-family:var(--mono)}
+.out{width:100%;min-height:120px;font-family:var(--mono);font-size:.8rem}
+footer{font-size:.78rem;color:var(--muted)}
+.metabox>summary{font-weight:500;color:var(--ink);padding:4px 0;list-style-position:inside}
+.metabox[open]>summary{margin-bottom:8px}
+.metabox .meta{margin-top:4px}
+.picked{font-size:.88rem;padding:6px 8px;border-radius:4px;background:var(--sel);margin:0}
+.picked b{font-family:var(--mono);font-weight:500;color:var(--muted);margin-right:6px}
+.dx>summary{font-size:.85rem;color:var(--muted)}
+.dx[open]>summary{margin-bottom:6px}
+#spsum2{display:none}
+@media (max-width:600px){
+  body{font-size:14px}
+  .wrap{gap:12px;padding-block:12px 84px}
+  h1{font-size:1.2rem}
+  .meta{grid-template-columns:1fr 1fr;gap:8px}
+  input{padding:6px 8px}
+  .card{padding:12px;gap:8px}
+  .tab{padding:8px 8px;font-size:.92rem}
+  .sbtn{padding:10px 0}
+  .bar-in{flex-wrap:nowrap;gap:8px}
+  .score{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .score strong{font-size:1.05rem}
+  .score .wide{display:none}
+  .btn{padding:6px 10px;font-size:.82rem;white-space:nowrap}
+  .btns{flex-wrap:nowrap;flex-shrink:0;gap:6px}
+  #spsum{display:none}
+  #spsum2{display:flex}
+}
+@media (prefers-reduced-motion:no-preference){.sbtn,.desc div{transition:background .12s}}
+</style>
+<style>body{margin:0}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>심평원 모의면접 평가표</h1>
+    <p class="sub">행정직 6급가(일반) · SPIRIT 인재상 × 공고 면접 평가항목 기준</p>
+  </header>
+
+  <details class="metabox" id="metabox" open><summary id="metasum">면접 정보</summary>
+  <section class="meta" aria-label="면접 정보">
+    <label for="m-name">지원자<input id="m-name" placeholder="이름"></label>
+    <label for="m-rater">평가자<input id="m-rater" placeholder="본인 / 스터디원"></label>
+    <label for="m-date">날짜<input id="m-date" type="date"></label>
+    <label for="m-topic">주제·과제<input id="m-topic" placeholder="PT 과제 / 토론 주제"></label>
+  </section>
+  </details>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <p class="note" id="tabnote"></p>
+  <div class="sp-sum" id="spsum2"></div>
+  <div class="banner" id="sample" hidden>
+    <span>PT면접 탭에는 사용 예시 점수가 들어 있어.</span>
+    <button class="btn" id="clear-sample">예시 지우고 시작</button>
+  </div>
+  <div class="list" id="list"></div>
+
+  <section class="card" id="result" hidden>
+    <div class="top"><span class="item">결과 텍스트</span><span class="lv">엑셀에 붙여넣으면 칸이 나뉨(탭 구분)</span></div>
+    <textarea class="out" id="out" readonly></textarea>
+  </section>
+
+  <footer>공식: 인재상 문구, 평가항목·우선순위, 60점 부적격 기준(공고 제2026-187호). 자체 설계: 인재상 연결(◎/○), 5·3·1점 지표, 질문 예시. 항목별 배점은 공고에 없어서 동일가중으로 계산함. 입력값은 이 브라우저에만 저장됨.</footer>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="score" id="score"></div>
+    <div class="btns">
+      <button class="btn primary" id="copy">결과 복사</button>
+      <button class="btn danger" id="reset">초기화</button>
+    </div>
+    <div class="sp-sum" id="spsum"></div>
+  </div>
+</div>
+
+<script>
+const ROWS = [{"iv": "집중면접", "item": "공공인으로서의 정신자세", "pri": 1, "sp": "책임", "lv": "◎", "scene": "인성", "look": "공공기관의 소명(국민 건강, 건강보험 제도)을 자기 행동 기준으로 삼는가", "s5": "공공기관 직원의 책무를 국민·제도 관점에서 설명하고, 개인 이익·편의보다 공익을 택한 구체 경험(상황→선택→결과)을 제시함", "s3": "공익·사명감을 말하지만 일반론에 그치고, 본인 행동 사례가 약하거나 결과가 모호함", "s1": "안정성·처우 등 개인 동기만 드러나거나, 공공성에 대한 인식이 보이지 않음", "q": "공공기관 직원에게 가장 중요한 덕목은 무엇이고, 그것을 실천한 경험은? / 규정과 민원인 편의가 충돌하면 어떻게 하겠나?", "id": "r1"}, {"iv": "집중면접", "item": "공공인으로서의 정신자세", "pri": 1, "sp": "투명성", "lv": "○", "scene": "인성", "look": "청렴·공정, 이해충돌 회피, 절차를 투명하게 지키는가", "s5": "청렴·이해충돌 상황에서 원칙을 지키고 그 과정을 보고·기록한 구체 경험을 제시하며, 이유를 국민 신뢰와 연결함", "s3": "청렴의 중요성은 알지만 회색지대 상황에서 판단 기준이 모호함", "s1": "관행·인맥에 의한 처리를 용인하거나, 문제를 숨기는 선택을 정당화함", "q": "상급자가 절차에 맞지 않는 처리를 지시하면? / 본인 실수를 알게 되었을 때 어떻게 했나?", "id": "r2"}, {"iv": "집중면접", "item": "전문지식과 응용능력", "pri": 2, "sp": "전문성", "lv": "◎", "scene": "PT(심층)", "look": "법령·제도·행정 지식을 과제에 정확히 적용하고, 객관 근거로 일관되게 판단하는가", "s5": "과제와 관련된 제도(국민건강보험법령, 진료비 심사·적정성 평가 기능 등)와 행정·경영 지식을 정확히 쓰고, 제시자료·수치를 근거로 일관된 결론을 냄", "s3": "관련 지식은 있으나 과제와 연결이 느슨하거나, 근거 일부가 부정확함", "s1": "기본 개념을 잘못 쓰거나, 근거 없이 주관적 판단으로 결론을 냄", "q": "(PT) 제시자료로 문제 원인과 개선안 발표 / 진료비 심사와 의료서비스 적정성 평가는 각각 무엇을 하는가?", "id": "r3"}, {"iv": "집중면접", "item": "전문지식과 응용능력", "pri": 2, "sp": "통합", "lv": "○", "scene": "PT(심층)", "look": "이해관계자(국민·의료계·보험자·정부)를 함께 고려한 균형 잡힌 대안인가", "s5": "대안이 이해관계자별로 미치는 영향을 나누어 분석하고, 상충 지점을 조정하는 방안까지 제시함", "s3": "이해관계자를 언급하지만 한쪽 관점에 치우치거나 조정 방안이 없음", "s1": "이해관계자를 고려하지 않은 일방적 대안을 냄", "q": "이 개선안에 의료계가 반대한다면 어떻게 조정하겠나?", "id": "r4"}, {"iv": "집중면접", "item": "전문지식과 응용능력", "pri": 2, "sp": "혁신", "lv": "○", "scene": "PT(심층)", "look": "데이터·디지털 활용 등으로 기존 방식을 개선하는가", "s5": "기존 방식의 한계를 짚고, 데이터·디지털 도구를 활용한 실행 가능한 개선안을 단계·비용·리스크와 함께 제시함", "s3": "개선 아이디어는 있으나 실행 방법·실현 가능성 검토가 부족함", "s1": "현행 방식 나열에 그치거나, 실현 불가능한 아이디어만 제시함", "q": "이 업무에 AI·데이터를 적용한다면 어디부터, 어떻게 하겠나?", "id": "r5"}, {"iv": "집중면접", "item": "의사발표의 정확성과 논리성", "pri": 3, "sp": "투명성", "lv": "◎", "scene": "PT(심층)·인성", "look": "듣는 사람이 이해·검증할 수 있게 명확하고 정직하게 전달하는가", "s5": "결론→근거→실행안 순으로 핵심을 먼저 말하고, 모르는 것·한계는 인정하며 확인 방법을 제시함", "s3": "내용은 맞으나 구조가 산만하거나, 불리한 질문에 얼버무림", "s1": "질문 의도와 다른 답을 하거나, 모르는 내용을 아는 것처럼 꾸며 답함", "q": "(꼬리질문) 그 수치의 근거는? / 방금 제시한 대안의 한계는 무엇이라 보나?", "id": "r6"}, {"iv": "집중면접", "item": "의사발표의 정확성과 논리성", "pri": 3, "sp": "전문성", "lv": "○", "scene": "PT(심층)", "look": "용어·수치·법령 인용이 정확하고 논지가 일관되는가", "s5": "용어·수치·법령을 정확히 인용하고, 발표와 질의응답의 논지가 처음부터 끝까지 일관됨", "s3": "대체로 정확하나 일부 용어 혼동이나 앞뒤 수치 불일치가 있음", "s1": "핵심 용어·수치를 틀리거나, 질의응답에서 발표 결론을 뒤집음", "q": "제시자료의 증감률을 다시 계산해 설명해 보라", "id": "r7"}, {"iv": "집중면접", "item": "예의, 품행 및 성실성", "pri": 4, "sp": "책임", "lv": "◎", "scene": "인성", "look": "맡은 일을 끝까지 수행하는 성실성, 약속·기한 준수", "s5": "어려운 업무를 기한 내 끝까지 완수한 경험을 과정·본인 역할·결과(수치)로 제시하고, 실패 시 책임지고 수습한 사례도 말함", "s3": "성실하다고 말하지만 근거 경험이 일반적이거나 본인 역할이 불분명함", "s1": "책임을 타인·환경 탓으로 돌리거나, 성실성을 보여줄 경험이 없음", "q": "맡은 일을 끝까지 해내기 어려웠던 경험은? / 본인 실수로 일정에 차질이 생겼을 때 어떻게 수습했나?", "id": "r8"}, {"iv": "집중면접", "item": "예의, 품행 및 성실성", "pri": 4, "sp": "투명성", "lv": "○", "scene": "면접 전 과정", "look": "존중하는 태도, 정직하고 일관된 답변", "s5": "입·퇴장부터 질의응답까지 예의 바르고, 압박 질문에도 감정 없이 사실대로 답하며 답변 간 일관성이 있음", "s3": "태도는 무난하나 압박 상황에서 방어적이거나 답변이 흔들림", "s1": "무례하거나 냉소적인 태도, 앞 답변과 모순되는 진술", "q": "(압박) 그 성과는 본인 혼자 낸 게 아니지 않나?", "id": "r9"}, {"iv": "집중면접", "item": "창의력, 의지력, 기타 발전가능성", "pri": 5, "sp": "혁신", "lv": "◎", "scene": "인성·PT(심층)", "look": "새로운 방식으로 가치를 만든 경험과 아이디어의 실행력", "s5": "관행을 바꿔 성과를 낸 경험(문제→아이디어→실행→결과 수치)을 제시하고, 입사 후 적용 계획을 구체적으로 말함", "s3": "아이디어는 있으나 실행·결과가 없거나, 입사 후 계획이 추상적임", "s1": "새로운 시도 경험이 없고 변화에 소극적인 태도를 보임", "q": "기존 방식을 바꿔 더 나은 결과를 만든 경험은? / 입사 후 개선하고 싶은 업무는?", "id": "r10"}, {"iv": "집중면접", "item": "창의력, 의지력, 기타 발전가능성", "pri": 5, "sp": "책임", "lv": "○", "scene": "인성", "look": "의지력·자기계발: 목표를 세워 꾸준히 실행하는가", "s5": "장기 목표를 세우고 꾸준히 실행해 성취한 경험과, 입사 후 역량개발 계획을 근거와 함께 제시함", "s3": "자기계발 의지는 있으나 지속성·성과 근거가 약함", "s1": "목표 의식이 보이지 않거나, 포기한 경험을 개선 노력 없이 말함", "q": "가장 오래 꾸준히 해온 일은? / 10년 후 어떤 전문가가 되어 있고 싶나?", "id": "r11"}, {"iv": "토론면접", "item": "경청 및 의견수렴", "pri": 1, "sp": "통합", "lv": "◎", "scene": "토론", "look": "다양한 의견을 듣고 공통점·쟁점을 정리해 합의로 이끄는가", "s5": "다른 참가자 발언을 요약·확인한 뒤 공통점과 쟁점을 정리하고, 소수 의견도 반영한 합의안을 제안함", "s3": "경청은 하지만 의견을 종합하지 못하고 자기 주장만 덧붙임", "s1": "타인 발언을 끊거나 무시하고 자기 주장만 반복함", "q": "연습: 상대 발언을 20초로 요약 → 공통점 1개·쟁점 1개 짚기 → 내 의견", "id": "r12"}, {"iv": "토론면접", "item": "경청 및 의견수렴", "pri": 1, "sp": "투명성", "lv": "○", "scene": "토론", "look": "반대 의견에도 존중하는 열린 태도", "s5": "반대 의견에도 존중하는 어조로 반응하고, 자신의 오류를 인정하며 입장을 수정할 줄 앎", "s3": "태도는 정중하나 반대 의견에 방어적으로 반응함", "s1": "반대 의견에 감정적·공격적으로 반응함", "q": "연습: 내 주장이 반박당했을 때 첫 문장 정해두기(인정할 부분 → 보완 근거)", "id": "r13"}, {"iv": "토론면접", "item": "의사발표의 정확성과 논리성", "pri": 2, "sp": "투명성", "lv": "◎", "scene": "토론", "look": "입장과 근거를 명확하고 정직하게 밝히는가", "s5": "두괄식으로 입장과 근거를 명확히 말하고, 자기 주장의 한계도 밝혀 논의를 진전시킴", "s3": "입장은 있으나 근거가 추상적이거나 발언이 길어 핵심이 흐림", "s1": "입장이 불분명하거나 맥락과 무관한 발언을 함", "q": "연습: 1회 발언 40초 이내, '입장 1문장 + 근거 2개' 형식", "id": "r14"}, {"iv": "토론면접", "item": "의사발표의 정확성과 논리성", "pri": 2, "sp": "전문성", "lv": "○", "scene": "토론", "look": "객관 근거를 정확히 쓰고 입장이 일관되는가", "s5": "제시자료·법령·통계 등 객관 근거를 정확히 활용하고, 입장이 토론 내내 일관됨", "s3": "근거 일부가 부정확하거나 입장이 흔들림", "s1": "근거 없이 감정·개인 경험에만 의존하거나 사실을 틀리게 인용함", "q": "연습: 토론 자료에서 내 입장을 뒷받침하는 수치 2개 미리 표시", "id": "r15"}, {"iv": "토론면접", "item": "주도성 및 협동성", "pri": 3, "sp": "통합", "lv": "◎", "scene": "토론", "look": "진행을 돕되 독점하지 않고 팀의 결론을 함께 만드는가", "s5": "논의 흐름을 정리하고 순서·시간을 제안하는 등 진행을 돕되, 독점하지 않고 팀 결론을 함께 만듦", "s3": "참여는 하지만 진행·조율 기여가 적거나, 주도하되 독점하는 경향이 있음", "s1": "침묵으로 일관하거나 반대로 토론을 독점함", "q": "연습: 중간 정리 멘트('지금까지 A와 B로 나뉘었는데, 남은 쟁점은 C') 준비", "id": "r16"}, {"iv": "토론면접", "item": "주도성 및 협동성", "pri": 3, "sp": "책임", "lv": "○", "scene": "토론", "look": "맡은 역할을 끝까지 수행하고 팀 결론에 책임지는가", "s5": "맡은 역할(정리·시간관리·반론 등)을 끝까지 수행하고, 팀 결론에 책임 있게 동의·보완함", "s3": "역할 수행이 일관되지 않음", "s1": "팀 결론과 무관하게 개인 평가만 의식한 행동을 함", "q": "연습: 마무리 1분 전 결론 문장 제안하기", "id": "r17"}, {"iv": "토론면접", "item": "설득 및 협상력", "pri": 4, "sp": "통합", "lv": "◎", "scene": "토론", "look": "상대의 핵심 이익을 파악해 양측이 수용할 절충안을 만드는가", "s5": "상대 입장의 핵심 이익을 파악하고, 양측이 수용할 수 있는 절충안(조건부·단계적 도입 등)을 제시해 합의를 이끎", "s3": "설득 시도는 있으나 일방적이어서 합의로 이어지지 않음", "s1": "자기 입장만 고수하거나 쉽게 포기해 논의가 멈춤", "q": "연습: 찬반 각각의 '양보 가능한 것 / 양보 불가한 것' 표로 정리", "id": "r18"}, {"iv": "토론면접", "item": "설득 및 협상력", "pri": 4, "sp": "전문성", "lv": "○", "scene": "토론", "look": "자료·사례·수치 근거로 설득하는가", "s5": "자료·사례·수치 근거로 설득하고, 반론에도 근거를 보강해 대응함", "s3": "근거가 약해 반론에 밀림", "s1": "목소리 크기·반복으로 밀어붙임", "q": "연습: 예상 반론 3개와 각각의 재반박 근거 준비", "id": "r19"}, {"iv": "토론면접", "item": "문제해결능력", "pri": 5, "sp": "혁신", "lv": "◎", "scene": "토론", "look": "쟁점의 원인을 구조화하고 새로운 대안을 내는가", "s5": "쟁점의 원인을 구조화하고, 실행 가능한 새 대안을 제시해 토론 결론의 질을 높임", "s3": "이미 나온 대안을 반복하거나 실행 방안이 부족함", "s1": "문제 정의 없이 결론을 서두르거나 대안이 없음", "q": "연습: '원인 3가지 → 원인별 대안' 구조로 메모", "id": "r20"}, {"iv": "토론면접", "item": "문제해결능력", "pri": 5, "sp": "전문성", "lv": "○", "scene": "토론", "look": "대안을 객관적 기준으로 비교해 일관되게 고르는가", "s5": "대안의 효과·비용·부작용을 객관적으로 비교하고 일관된 기준으로 최선안을 고름", "s3": "대안 비교 기준이 모호함", "s1": "근거 없이 선호로 대안을 고름", "q": "연습: 효과·비용·실현가능성 3기준으로 대안 비교표 작성", "id": "r21"}];
+const SPC = {"전문성":"--sp1","통합":"--sp2","책임":"--sp3","혁신":"--sp4","투명성":"--sp5"};
+const SPS = Object.keys(SPC);
+const TABS = [
+  {id:"pt", name:"PT면접", note:"다대일 집중면접 중 심층면접: 당일 과제 수행 → 발표·질의응답", test:r=>r.iv==="집중면접" && r.scene.includes("PT")},
+  {id:"in", name:"인성면접", note:"다대일 집중면접 중 인성면접: 조직 적합도·종합인성", test:r=>r.iv==="집중면접" && (r.scene.includes("인성")||r.scene.includes("전 과정"))},
+  {id:"dc", name:"토론면접", note:"다대다 토론면접: 개인 간 상호작용과 집단 내 개인행동", test:r=>r.iv==="토론면접"}
+];
+TABS.forEach(t=>t.rows=ROWS.filter(t.test));
+
+const KEY="hira-mock-form-v1";
+let S = {tab:"pt", meta:{}, sc:{pt:{},in:{},dc:{}}, memo:{pt:{},in:{},dc:{}}, sample:true};
+try{ const v=JSON.parse(localStorage.getItem(KEY)||"null"); if(v&&v.sc) S=Object.assign(S,v); }catch(e){}
+if(S.sample && !Object.keys(S.sc.pt).length){
+  const ex=[4,3,3,4,5,3];
+  TABS[0].rows.forEach((r,i)=>S.sc.pt[r.id]=ex[i%ex.length]);
+  S.sc.pt[TABS[0].rows[0].id]=4;
+}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+const WIDE=matchMedia("(min-width:601px)").matches;
+const openDx=new Set();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+["name","rater","date","topic"].forEach(k=>{
+  const el=$("m-"+k); el.value=S.meta[k]||(k==="date"?new Date().toISOString().slice(0,10):"");
+  el.addEventListener("input",()=>{S.meta[k]=el.value;save()});
+});
+
+function renderTabs(){
+  $("tabs").innerHTML=TABS.map(t=>{
+    const n=Object.keys(S.sc[t.id]).length;
+    return `<button class="tab" role="tab" id="tab-${t.id}" aria-selected="${t.id===S.tab}" data-t="${t.id}">${t.name}<small>${n}/${t.rows.length}</small></button>`;
+  }).join("");
+}
+function renderList(){
+  const t=TABS.find(x=>x.id===S.tab);
+  $("tabnote").textContent=t.note+" · 문항 "+t.rows.length+"개";
+  $("sample").hidden=!(S.sample && t.id==="pt");
+  $("list").innerHTML=t.rows.map(r=>{
+    const v=S.sc[t.id][r.id];
+    const lvl=n=>{ if(!v) return ""; const near=v>=4?5:(v===3?3:1); return n===near?"on":""; };
+    return `<article class="card" data-r="${r.id}">
+      <div class="top"><span class="item">${esc(r.item)}</span>
+        <span class="chip" style="color:var(${SPC[r.sp]})">${esc(r.sp)} ${r.lv}</span>
+        <span class="lv">공고 우선순위 ${r.pri} · ${esc(r.scene)}</span></div>
+      <p class="look">${esc(r.look)}</p>
+      <div class="scale" role="group" aria-label="${esc(r.item)} ${esc(r.sp)} 점수">
+        ${[1,2,3,4,5].map(n=>`<button class="sbtn" id="b-${t.id}-${r.id}-${n}" data-n="${n}" aria-pressed="${v===n}">${n}</button>`).join("")}
+      </div>
+      ${v?`<p class="picked"><b>${v}점 ≈ ${v>=4?5:(v===3?3:1)}점 지표</b>${esc(v>=4?r.s5:(v===3?r.s3:r.s1))}</p>`:""}
+      <details class="dx" id="dx-${t.id}-${r.id}" ${WIDE||openDx.has(t.id+r.id)?"open":""}><summary>행동지표 5·3·1점 보기</summary>
+      <div class="desc">
+        <div class="${lvl(5)}"><b>5점</b><span>${esc(r.s5)}</span></div>
+        <div class="${lvl(3)}"><b>3점</b><span>${esc(r.s3)}</span></div>
+        <div class="${lvl(1)}"><b>1점</b><span>${esc(r.s1)}</span></div>
+      </div></details>
+      <details><summary>질문·연습 예시</summary>${esc(r.q)}</details>
+      <textarea id="memo-${t.id}-${r.id}" placeholder="메모: 실제 답변, 근거, 보완점">${esc(S.memo[t.id][r.id]||"")}</textarea>
+    </article>`;
+  }).join("");
+}
+function calc(tid){
+  const t=TABS.find(x=>x.id===tid); const vals=t.rows.map(r=>S.sc[tid][r.id]).filter(Boolean);
+  const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
+  const sp={}; SPS.forEach(k=>{const a=t.rows.filter(r=>r.sp===k).map(r=>S.sc[tid][r.id]).filter(Boolean); sp[k]=a.length?a.reduce((x,y)=>x+y,0)/a.length:null;});
+  return {n:vals.length,total:t.rows.length,avg,pct:avg==null?null:avg/5*100,sp};
+}
+function renderScore(){
+  const c=calc(S.tab);
+  if(c.avg==null){ $("score").innerHTML=`입력 0/${c.total}`; }
+  else{
+    const low=c.pct<60;
+    $("score").innerHTML=`<span class="wide">평균 </span><strong>${c.avg.toFixed(2)}</strong>/5 · <strong>${c.pct.toFixed(1)}</strong>점<span class="wide"> · ${c.n}/${c.total}</span> <span class="flag ${low?"low":""}">${low?"60↓":"60↑"}</span>`;
+  }
+  $("spsum").innerHTML=$("spsum2").innerHTML=SPS.filter(k=>c.sp[k]!=null).map(k=>`<span style="color:var(${SPC[k]})">${k} ${c.sp[k].toFixed(1)}</span>`).join("");
+}
+function render(){renderTabs();renderList();renderScore();}
+
+$("tabs").addEventListener("click",e=>{const b=e.target.closest(".tab"); if(!b) return; S.tab=b.dataset.t; save(); render(); $("result").hidden=true;});
+$("list").addEventListener("click",e=>{
+  const b=e.target.closest(".sbtn"); if(!b) return;
+  const rid=b.closest(".card").dataset.r, n=+b.dataset.n;
+  if(S.sample){S.sample=false;}
+  if(S.sc[S.tab][rid]===n) delete S.sc[S.tab][rid]; else S.sc[S.tab][rid]=n;
+  save(); const y=scrollY; render(); scrollTo(0,y);
+});
+$("list").addEventListener("input",e=>{
+  if(e.target.tagName!=="TEXTAREA") return;
+  const rid=e.target.closest(".card").dataset.r; S.memo[S.tab][rid]=e.target.value; save();
+});
+$("list").addEventListener("toggle",e=>{const d=e.target; if(!d.classList||!d.classList.contains("dx")) return; const k=d.id.slice(3).replace("-",""); d.open?openDx.add(k):openDx.delete(k);},true);
+function metaSum(){const m=S.meta; const s=[m.name,m.date,m.topic].filter(Boolean).join(" · "); $("metasum").textContent="면접 정보"+(s?" — "+s:"");}
+if(!WIDE) $("metabox").open=false;
+["name","rater","date","topic"].forEach(k=>$("m-"+k).addEventListener("input",metaSum)); metaSum();
+$("clear-sample").addEventListener("click",()=>{S.sc.pt={}; S.sample=false; save(); render();});
+
+let armed=false;
+$("reset").addEventListener("click",()=>{
+  const b=$("reset");
+  if(!armed){armed=true; b.textContent="한 번 더 눌러 확인"; setTimeout(()=>{armed=false;b.textContent="초기화";},3000); return;}
+  armed=false; b.textContent="초기화"; S.sc[S.tab]={}; S.memo[S.tab]={}; S.sample=false; save(); render();
+});
+
+function resultText(){
+  const t=TABS.find(x=>x.id===S.tab), c=calc(S.tab), m=S.meta;
+  const L=[];
+  L.push(["면접","지원자","평가자","날짜","주제"].join("\t"));
+  L.push([t.name,m.name||"",m.rater||"",m.date||"",m.topic||""].join("\t"));
+  L.push("");
+  L.push(["평가항목","인재상","연결","점수","메모"].join("\t"));
+  t.rows.forEach(r=>L.push([r.item,r.sp,r.lv,S.sc[t.id][r.id]||"",(S.memo[t.id][r.id]||"").replace(/\s+/g," ")].join("\t")));
+  L.push("");
+  L.push(["평균(1~5)",c.avg==null?"-":c.avg.toFixed(2),"100점 환산",c.pct==null?"-":c.pct.toFixed(1)].join("\t"));
+  SPS.forEach(k=>{ if(c.sp[k]!=null) L.push([k,c.sp[k].toFixed(2)].join("\t")); });
+  return L.join("\n");
+}
+$("copy").addEventListener("click",()=>{
+  const txt=resultText(); $("out").value=txt; $("result").hidden=false;
+  const b=$("copy");
+  const done=m=>{b.textContent=m; setTimeout(()=>b.textContent="결과 복사",2000);};
+  try{
+    navigator.clipboard.writeText(txt).then(()=>done("복사됨"),()=>{$("out").select(); done("아래 텍스트를 직접 복사");});
+  }catch(e){$("out").select(); done("아래 텍스트를 직접 복사");}
+});
+render();
+</script>
+
+</body>
+</html>
