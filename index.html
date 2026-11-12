@@ -149,19 +149,20 @@ const ROWS = [{"iv": "집중면접", "item": "공공인으로서의 정신자세
 const SPC = {"전문성":"--sp1","통합":"--sp2","책임":"--sp3","혁신":"--sp4","투명성":"--sp5"};
 const SPS = Object.keys(SPC);
 const TABS = [
+  {id:"dc", name:"토론면접", note:"다대다 토론면접: 개인 간 상호작용과 집단 내 개인행동", test:r=>r.iv==="토론면접"},
   {id:"pt", name:"PT면접", note:"다대일 집중면접 중 심층면접: 당일 과제 수행 → 발표·질의응답", test:r=>r.iv==="집중면접" && r.scene.includes("PT")},
-  {id:"in", name:"인성면접", note:"다대일 집중면접 중 인성면접: 조직 적합도·종합인성", test:r=>r.iv==="집중면접" && (r.scene.includes("인성")||r.scene.includes("전 과정"))},
-  {id:"dc", name:"토론면접", note:"다대다 토론면접: 개인 간 상호작용과 집단 내 개인행동", test:r=>r.iv==="토론면접"}
+  {id:"in", name:"인성면접", note:"다대일 집중면접 중 인성면접: 조직 적합도·종합인성", test:r=>r.iv==="집중면접" && (r.scene.includes("인성")||r.scene.includes("전 과정"))}
 ];
 TABS.forEach(t=>t.rows=ROWS.filter(t.test));
 
 const KEY="hira-mock-form-v1";
-let S = {tab:"pt", meta:{}, sc:{pt:{},in:{},dc:{}}, memo:{pt:{},in:{},dc:{}}, sample:true};
+let S = {tab:"dc", meta:{}, sc:{pt:{},in:{},dc:{}}, memo:{pt:{},in:{},dc:{}}, sample:true};
 try{ const v=JSON.parse(localStorage.getItem(KEY)||"null"); if(v&&v.sc) S=Object.assign(S,v); }catch(e){}
+const PT=TABS.find(x=>x.id==="pt");
 if(S.sample && !Object.keys(S.sc.pt).length){
   const ex=[4,3,3,4,5,3];
-  TABS[0].rows.forEach((r,i)=>S.sc.pt[r.id]=ex[i%ex.length]);
-  S.sc.pt[TABS[0].rows[0].id]=4;
+  PT.rows.forEach((r,i)=>S.sc.pt[r.id]=ex[i%ex.length]);
+  S.sc.pt[PT.rows[0].id]=4;
 }
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const $=id=>document.getElementById(id);
